@@ -72,4 +72,4 @@ frontend/
 Task Flow provides basic task and project management functionality with a FastAPI backend and a simple web frontend.
 
 ## Development
-Task Flow project development branch.
+Task Flow project development branch...
