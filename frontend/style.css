@@ -1,0 +1,62 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+}
+
+#task-form {
+    position: sticky;
+    top: 0;
+    padding: 20px;
+    margin-bottom: 30px;
+    background: white;
+    border: 2px solid #333;
+}
+
+#task-form input,
+#task-form select,
+#task-form button {
+    padding: 10px;
+    margin: 5px;
+}
+
+#task-list {
+    padding: 20px;
+    margin: 20px auto;
+    border: 3px solid #333;
+    max-width: 800px;
+}
+
+.task {
+    padding: 15px;
+    margin: 10px 0;
+    border: 2px solid #999;
+    background: white;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #task-form {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    #task-list {
+        padding: 10px;
+    }
+}
