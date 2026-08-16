@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from database import Base, engine, get_db
 import models
+from algorithms import insertion_sort, binary_search, linear_search
 from schemas import (
     TaskCreate,
     TaskResponse,
@@ -120,11 +121,52 @@ def create_task(
 
 
 @app.get("/tasks", response_model=list[TaskResponse])
-def get_tasks(db: Session = Depends(get_db)):
-    return db.query(models.Task).all()
+def get_tasks(sort: str = "", db: Session = Depends(get_db)):
+    tasks = db.query(models.Task).all()
+
+    # Normal request: database order me tasks return
+    if sort == "":
+        return tasks
+
+    # Priority ke according sorting
+    if sort == "priority":
+        records = [
+            {
+                "id": task.id,
+                "title": task.title,
+                "priority": task.priority,
+                "due_date": task.due_date,
+                "project_id": task.project_id
+            }
+            for task in tasks
+        ]
+
+        # low < medium < high
+        priority_order = {
+            "low": 1,
+            "medium": 2,
+            "high": 3
+        }
+
+        for record in records:
+            record["priority_value"] = priority_order.get(
+                record["priority"], 99
+            )
+
+        insertion_sort(records, "priority_value")
+
+        for record in records:
+            record.pop("priority_value")
+
+        return records
+
+    raise HTTPException(
+        status_code=400,
+        detail="Invalid sort option"
+    )
 
 @app.get("/tasks/{task_id}", response_model=TaskResponse)
-def get_task(task_id: int, db: Session = Depends(get_db)):
+def get_task(task_id: int, db: Session = Depends(get_db)):  
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
 
     if not task:
@@ -185,5 +227,3 @@ def project_statistics(db: Session = Depends(get_db)):
         }
         for project_id, project_name, task_count in results
     ]
-def get_db_session(db: Session = Depends(get_db)):
-    return db
